@@ -38,7 +38,7 @@ Chrome_Extension.check_storage = ()=>{
         {mode: "get_storage", id: Chrome_Extension.course_data.id},
         function(response) {
             if(response.success){
-                console.log(response)
+                // console.log(response)
                 if(response["storage"]!=undefined&&response["storage"].length!=0){
                     console.log("This course is already registerd.");
                     console.log(response["storage"])
@@ -130,5 +130,5 @@ Chrome_Extension.register_course = ()=>{
 
 
 //main
-console.log(Chrome_Extension.course_data);
+// console.log(Chrome_Extension.course_data);
 Chrome_Extension.check_storage();
