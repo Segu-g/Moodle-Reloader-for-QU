@@ -1,0 +1,37 @@
+:global{
+    .card{
+        &:first-child{
+            padding-top: 1rem;
+        }
+        padding-left: .5rem;
+        padding-right: .5rem;
+        padding-bottom: 1rem;
+    }
+    .card-body{
+        display: block;
+        padding: 1rem;
+        border: 1px solid rgba(0,0,0,.125);
+    }
+}
+
+:local{
+    .root{
+        font-size: medium;
+        min-width:20rem;
+    }
+
+    .header{
+        position: fixed;
+        padding: .5rem;
+        background: #ffe67a;
+        width: 100%;
+        height: 21.6px;
+        top: 0%;
+        left: 0%;
+    }
+    .header-dummy{
+        height: 40px;
+    }
+
+
+}
