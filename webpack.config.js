@@ -66,6 +66,15 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /react\-tabs\.css$/i,
+                use: [
+                    "style-loader",
+                    {
+                        loader: "css-loader",
+                    },
+                ],
+            },
         ],
     },
     resolve: {

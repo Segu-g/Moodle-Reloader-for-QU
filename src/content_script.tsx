@@ -7,10 +7,12 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { QUMoodleURL , id2url} from "./MoodleUtils/UrlParser";
+import { PAGETYPES, QUMoodleURL , id2url} from "./MoodleUtils/UrlParser";
 import { newCoursesManeger, CoursesManeger } from "./datas_wrapper/Course";
 import { newTimeTableManeger, TimeTableManeger } from "./datas_wrapper/TimeTable";
-import { get_next_courses } from "./datas_wrapper/CourseCollector";
+import { get_next_courses, get_day_courses } from "./datas_wrapper/CourseCollector";
+import { days, Time, period_times } from "./datas_wrapper/Time";
+import { require_reload } from "./chromeAPI_wrapper/message";
 export { }
 
 
@@ -25,6 +27,39 @@ async function main() {
         return;
     }
     render_next_courses(element, timetable, courses);
+}
+
+
+async function set_reload( timetable: TimeTableManeger ,moodle_url : QUMoodleURL) {
+    if (!moodle_url.searchParams.has("id")) {
+        return false;
+    }
+    const id = Number(moodle_url.searchParams.get("id"));
+    const today = new Date();
+    const todays_courses = get_day_courses(today.getDay(), timetable);
+    const now = new Time(today.getHours(), today.getMinutes());
+    var period = 0;
+    for (; period < todays_courses.length; period++){
+        if (now < period_times[period]) {
+            continue;
+        }
+        if (todays_courses[period] != id) {
+            continue;
+        }
+        let time = period_times[period];
+        const date = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+            time.hours,
+            time.minutes
+        );
+        require_reload(id, date);
+        
+    }
+
+    
+    
 }
 
 

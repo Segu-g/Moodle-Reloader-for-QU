@@ -42,7 +42,7 @@ export function get_next_courses(n: number, timetable: TimeTableManeger) {
 }
 
 
-function get_current_period() {
+export function get_current_period() {
     let ret_list: number[] = []
     const now = new Date();
     const now_time = new Time(now.getHours(), now.getMinutes());
@@ -53,6 +53,15 @@ function get_current_period() {
         }
     }
     return ret_list;
+}
+
+export function get_day_courses(day: number, timetable: TimeTableManeger) {
+    const range = [...new Array(period_times.length).keys()];
+    return range.map(
+        (period) => {
+            return timetable.load(days[day], period)
+        }
+    );
 }
 
 export function get_current_course(timetable: TimeTableManeger) {
