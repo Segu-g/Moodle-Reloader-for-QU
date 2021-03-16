@@ -6,7 +6,7 @@ import { ChromeStorage } from "../chromeAPI_wrapper/storage";
 
 type timetable_type = { [day in (typeof days)[number]]: Array<number | undefined> };
 
-export class TimeTableManeger {
+export class _TimeTableManeger {
     protected timetable: timetable_type;
 
     constructor(timetable: timetable_type) {
@@ -26,6 +26,21 @@ export class TimeTableManeger {
     }
 }
 
+export class TimeTableManeger extends _TimeTableManeger{
+    save() {
+        ChromeStorage._set({ timetable: this.timetable });
+    }
+    delete(day: (typeof days)[number], period: number) {
+        super.delete(day, period);
+        this.save();
+    }
+
+    write(day: (typeof days)[number], period: number, id: number) {
+        super.write(day, period, id);
+        this.save();
+    }
+}
+
 export async function newTimeTableManeger() {
     return new TimeTableManeger(
         await ChromeStorage._get(
@@ -39,7 +54,7 @@ export async function newTimeTableManeger() {
 }
 
 
-export class TimeTableImpl extends TimeTableManeger {
+export class TimeTableImpl extends _TimeTableManeger {
     private setTimetable: React.Dispatch<React.SetStateAction<timetable_type>>;
     private forceUpdate: React.DispatchWithoutAction;
     constructor(

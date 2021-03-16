@@ -8,7 +8,7 @@ export interface Course {
 }
 
 
-export class CoursesManeger {
+export class _CoursesManeger {
     protected courses: Course[];
     constructor(courses: Course[]) {
         this.courses = courses;
@@ -58,7 +58,24 @@ export class CoursesManeger {
         this.courses[from_index] = to_course;
         this.courses[to_index] = from_course;
     }
+}
 
+export class CoursesManeger extends _CoursesManeger{
+    save() {
+        ChromeStorage._set({ courses: this.courses });
+    };
+    delete(id: number) {
+        super.delete(id);
+        this.save();
+    }
+    write(id: number, course: Course) {
+        super.write(id, course);
+        this.save();
+    }
+    swap(from_id: number, to_id: number) {
+        super.swap(from_id, to_id);
+        this.save();
+    }
 }
 
 export async function newCoursesManeger() {
@@ -66,7 +83,7 @@ export async function newCoursesManeger() {
     return new CoursesManeger(courses);
 }
 
-export class CoursesImpl extends CoursesManeger {
+export class CoursesImpl extends _CoursesManeger {
     private setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
     private forceUpdate: React.DispatchWithoutAction;
     constructor(courses: Course[], setCourses: React.Dispatch<React.SetStateAction<Course[]>>) {

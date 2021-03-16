@@ -10,6 +10,7 @@
     "description": "This extension reload Moodle page when the course start.",
     "permissions": [
         "storage",
+        "alarms",
         "tabs"
     ],
     "options_ui": {

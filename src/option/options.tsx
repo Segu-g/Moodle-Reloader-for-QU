@@ -14,27 +14,13 @@ import { Loading } from "./Loading";
 import { ChromeStorage } from "../chromeAPI_wrapper/storage"
 
 export { }
-(async () => {
-    const root = document.getElementById("root");
-    ReactDOM.render(
-        <Loading />,
-        root
-    );
-    const version = 2;
-    const old_version = await ChromeStorage.cheack_version();
-    if (old_version < version) {
-        await Promise.all([
-            ChromeStorage.clear_sync(),
-            ChromeStorage.clear_local()
-        ]);
-        await ChromeStorage.set_version(version);
-    }
 
-    ReactDOM.render(
-        <App page="Home" />,
-        root
-    )
-})()
+const root = document.getElementById("root");
+ReactDOM.render(
+    <App page="Home" />,
+    root
+)
+
 
 
 
