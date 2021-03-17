@@ -3,8 +3,6 @@ import ReactDOM from "react-dom";
 
 
 import "../styles/content.scss";
-/* global: chrome */
-declare var chrome: any;
 
 export function Home() {
     return (
