@@ -44,7 +44,14 @@ chrome.runtime.onMessage.addListener(
                 break;
             case "get":
                 break;
+            default:
+                console.log("unknown message: " + message.operation);
+                sendResponse();
+                return;
+                
         }
+        sendResponse();
+        return;
     }
 );
 

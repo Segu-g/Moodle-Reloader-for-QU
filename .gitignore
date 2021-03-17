@@ -60,6 +60,7 @@ bower_components
 build/Release
 node_modules/
 jspm_packages/
+dist/
 typings/
 .npm
 .eslintcache

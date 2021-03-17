@@ -27,10 +27,12 @@ async function main() {
         return;
     }
     render_next_courses(element, timetable, courses);
+    set_reload(timetable, moodle_url);
 }
 
 
-async function set_reload( timetable: TimeTableManeger ,moodle_url : QUMoodleURL) {
+async function set_reload(timetable: TimeTableManeger, moodle_url: QUMoodleURL) {
+    // console.log("set_reload");
     if (!moodle_url.searchParams.has("id")) {
         return false;
     }
@@ -39,11 +41,14 @@ async function set_reload( timetable: TimeTableManeger ,moodle_url : QUMoodleURL
     const todays_courses = get_day_courses(today.getDay(), timetable);
     const now = new Time(today.getHours(), today.getMinutes());
     var period = 0;
+    // console.log(todays_courses);
     for (; period < todays_courses.length; period++){
-        if (now < period_times[period]) {
+        if (now >= period_times[period]) {
+            // console.log(period, period_times[period])
             continue;
         }
         if (todays_courses[period] != id) {
+            // console.log(period, todays_courses[period])
             continue;
         }
         let time = period_times[period];
