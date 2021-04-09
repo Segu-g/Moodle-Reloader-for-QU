@@ -26,7 +26,7 @@ async function main() {
     if (element == null) {
         return;
     }
-    render_next_courses(element, timetable, courses);
+    render_today_courses(element, timetable, courses);
     set_reload(timetable, moodle_url);
 }
 
@@ -67,6 +67,35 @@ async function set_reload(timetable: TimeTableManeger, moodle_url: QUMoodleURL) 
     
 }
 
+
+function render_today_courses(element: HTMLElement, timetable: TimeTableManeger, courses: CoursesManeger) {
+    const today = new Date();
+    const day_courses = get_day_courses(today.getDay(), timetable);
+    let buf_dom: ChildNode | null = element.children[0];
+    for (let period = 0; period < day_courses.length; period++) {
+        let id = day_courses[period];
+        if (id == undefined) {
+            continue;
+        }
+        let course = courses.load(id);
+        let target_dom = document.createElement("div");
+        const day_formatter = ["日", "月", "火", "水", "木", "金", "土"];
+        target_dom.className = "list-group-item";
+        element.insertBefore(target_dom, buf_dom);
+        ReactDOM.render(
+            (
+                <a href={id2url(id).href}>
+                    {day_formatter[today.getDay()]}
+                    {period}
+                    &emsp;
+                    {course?.name}
+                </a>
+            ),
+            target_dom
+        );
+        buf_dom = target_dom.nextSibling;
+    }
+}
 
 
 function render_next_courses(element: HTMLElement, timetable: TimeTableManeger, courses: CoursesManeger) {
