@@ -1,0 +1,27 @@
+{
+    "name": "Moodle Reloader for QU",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "icons": {
+       "128": "icon128.png",
+       "32": "icon32.png",
+       "48": "icon48.png"
+    },
+    "description": "This extension reload Moodle page when the course start.",
+    "permissions": [
+        "storage",
+        "tabs"
+    ],
+    "options_ui": {
+        "page": "options/options.html",
+        "open_in_tab": true
+   },
+    "background": {
+        "scripts": ["event/event.js"],
+        "persistent": false
+    },
+    "content_scripts": [{
+        "matches": ["https://moodle.s.kyushu-u.ac.jp/course/view.php?id=*"],
+        "js": ["content/content_script.js"]
+    }]
+}
