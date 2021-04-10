@@ -42,7 +42,7 @@ function TimeTableCell(props: {
         }));
     
     return (
-        <td ref={ref} style={{ background: collected.isOver ? "rgba(0, 0, 0, 0.2)" : "white" }} className="phalf">
+        <td ref={ref} style={{ background: collected.isOver ? "rgba(0, 0, 0, 0.2)" : "white" , maxWidth: "12vw"}} className="phalf">
             <div>
                 {
                     (course == undefined) ?
