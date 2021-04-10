@@ -1,0 +1,83 @@
+:local{
+    .course-control{
+        flex: 1;
+        min-width: 300px;
+        min-height: 400px;
+    }
+
+    .course-menu{
+        position: static;
+        border-bottom: solid 1px #666;
+    }
+
+    .course-list{
+        display: inline-block;
+        height: auto;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+
+    .course-element{
+        display: flexbox;
+        border: solid 1px #666;
+        border-radius: 3px;
+        height: fit-content;
+        margin: .2rem;
+        padding: 1rem;
+    }
+
+    .inputgrid{
+        display: grid;
+        grid-template-rows: 10rem 1fr;
+        grid-template-columns: 3rem 3rem 3rem;
+    }
+
+    .flex-last{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        :last-child{
+            display: flexbox;
+            margin-left: auto;
+        }
+    }
+
+     .gg-external {
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(var(--ggs,1));
+        width: 12px;
+        height: 12px;
+        box-shadow:
+        -2px 2px 0 0,
+        -4px -4px 0 -2px,
+        4px 4px 0 -2px;
+        margin: 0.5em;
+        &::after,&::before{
+            content: "";
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            right: -4px
+        }
+        &::before {
+            background: -webkit-link;
+            transform: rotate(-45deg);
+            width: 12px;
+            height: 2px;
+            top: 1px
+        }
+        &::after {
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid;
+            border-top: 2px solid;
+            top: -4px
+        } 
+    }
+}
