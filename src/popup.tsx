@@ -187,7 +187,7 @@ function Contents(props: {
     url: string,
     title?: string
 }) {
-    let keys = ["today", "enrol", "test"];
+    let keys = ["today", "enrol", /* test, */];
     const [selected_key, set_key] = useState(keys[0]);
     const tabs = keys.map(
         (key) => {
@@ -237,8 +237,16 @@ function App(props: {
 }) {
     return (
         <div className={ styles["root"] }>
-            <div className={styles["header"]}>
-                Moodle Reloader
+            <div className={"row-center " + styles["header"]}>
+                <div>
+                    Moodle Reloader
+                </div>
+                <div
+                    style={{ marginLeft: "auto" , cursor: "pointer"}}
+                    onClick={() => {chrome.runtime.openOptionsPage()}}
+                >
+                    (OPTION)
+                </div>
             </div>
             <div className={styles["header-dummy"]}></div>
             <Contents timetable={props.timetable} courses={props.courses} url={props.url} title={props.title}/>

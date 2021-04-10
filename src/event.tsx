@@ -44,7 +44,14 @@ chrome.runtime.onMessage.addListener(
                 break;
             case "get":
                 break;
+            default:
+                console.log("unknown message: " + message.operation);
+                sendResponse();
+                return;
+                
         }
+        sendResponse();
+        return;
     }
 );
 
@@ -72,9 +79,8 @@ function reload_process(id: number, time: number) {
         (tab) => {
             const tab_id = tab.id;
             if (tab_id != undefined) {
-                setTimeout(
-                    () => { chrome.tabs.remove(tab_id) },
-                    5000
+                window.addEventListener("load",
+                    () => { chrome.tabs.remove(tab_id) }
                 )
             }
         }

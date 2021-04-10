@@ -60,7 +60,8 @@ bower_components
 build/Release
 node_modules/
 jspm_packages/
-typings/
+dist
+dist.zip
 .npm
 .eslintcache
 .node_repl_history
@@ -68,3 +69,6 @@ typings/
 .yarn-integrity
 .env
 .next
+dist/manifest.json
+dist/content/content.bundle.js
+dist/event/event.bundle.js
