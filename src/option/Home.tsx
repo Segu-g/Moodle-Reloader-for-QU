@@ -25,6 +25,25 @@ export function Home() {
                         author: Segu (<a href="https://twitter.com/SeguSegment">@SeguSegment</a>) <br />
                         email: <a href="mailto:segusegment@gmail.com">segusegment@gmail.com</a>
                     </p>
+
+                    <span className="text-heading">
+                        更新履歴
+                    </span>
+                    <p>
+                        <h5>
+                            ver2.0.1
+                        </h5>
+                        <p>
+                            ナビゲーションに表示するコースを先4時限から当日の講義に変更．
+                        </p>
+
+                        <h5>
+                            ver2.0.0
+                        </h5>
+                        <p>
+                            UIを一新し，Moodleのナビゲーションへのコースの表示，ポップアップをサポート．
+                        </p>
+                    </p>
                 </div>
             </div>
         </div>
