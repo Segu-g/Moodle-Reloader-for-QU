@@ -70,3 +70,6 @@ typings/
 .yarn-integrity
 .env
 .next
+dist/manifest.json
+dist/content/content.bundle.js
+dist/event/event.bundle.js
