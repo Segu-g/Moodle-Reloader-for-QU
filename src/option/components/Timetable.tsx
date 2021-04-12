@@ -48,7 +48,7 @@ function TimeTableCell(props: {
                     (course == undefined) ?
                         <div /> :
                         <div className="row-center">
-                            <div>
+                            <div style={{overflowWrap:"break-word"}}>
                                 {course.id}<br />
                                 {course.name}
                             </div>
@@ -275,7 +275,7 @@ export function TimeTableSection() {
             <div className="card-body">
                 {
                     (ready_course&&ready_timetable)?
-                    <div className="row">
+                        <div className="row" style={{ alignItems: "flex-start"}}>
                         <div className="mr">
                             <TimetableComponent timetable={timetable} courses={ courses }/>
                         </div>
