@@ -31,6 +31,13 @@ export function Home() {
                     </span>
                     <p>
                         <h5>
+                            ver2.0.2
+                        </h5>
+                        <p>
+                            TimeTable周りのUIを改善
+                        </p>
+
+                        <h5>
                             ver2.0.1
                         </h5>
                         <p>

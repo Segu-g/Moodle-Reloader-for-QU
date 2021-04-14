@@ -91,7 +91,7 @@ function TimetableComponent(props:{ timetable: TimeTableImpl, courses: CoursesIm
 
     const table_style: React.CSSProperties = {
         minWidth: "600px",
-        maxWidth: "1400px",
+        maxWidth: "65vw",
         minHeight: "400px"
     }
     return (
@@ -266,23 +266,29 @@ function CourseListComponent(props: { courses: CoursesImpl }) {
 export function TimeTableSection() {
     const [ready_course, courses] = useCourses();
     const [ready_timetable, timetable] = useTimetable();
+    const [fontsize, setFontsize] = useState("16");
     return (
         
         <div className="timetable">
             <span className="text-heading">
                 時間割
-                </span>
+            </span>
+            <br/>
             <div className="card-body">
-                {
-                    (ready_course&&ready_timetable)?
-                        <div className="row" style={{ alignItems: "flex-start"}}>
-                        <div className="mr">
-                            <TimetableComponent timetable={timetable} courses={ courses }/>
-                        </div>
-                        <CourseListComponent courses={courses}/>
-                        </div> :
-                        <Loading />
-                }
+                font size: <input type="range" value={fontsize} min="1" max="50"
+                    onChange={(event) => { setFontsize(event.target.value);}}></input> {fontsize}
+                <div style={{fontSize: fontsize+"px"}}>
+                    {
+                        (ready_course && ready_timetable) ?
+                            <div className="row" style={{ alignItems: "flex-start" }}>
+                                <div className="mr">
+                                    <TimetableComponent timetable={timetable} courses={courses} />
+                                </div>
+                                <CourseListComponent courses={courses} />
+                            </div> :
+                            <Loading />
+                    }
+                </div>
             </div>
         </div>
     );
