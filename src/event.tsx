@@ -79,9 +79,16 @@ function reload_process(id: number, time: number) {
         (tab) => {
             const tab_id = tab.id;
             if (tab_id != undefined) {
-                window.addEventListener("load",
-                    () => { chrome.tabs.remove(tab_id) }
-                )
+                chrome.tabs.onUpdated.addListener(
+                    function mycallback (tabId, changeInfo, tab){
+                        if (tabId == tab_id && changeInfo.status == "complete") {
+                            setInterval(
+                                () => {chrome.tabs.remove(tab_id)},
+                                5 * 1000
+                            );
+                            chrome.tabs.onUpdated.removeListener(mycallback);
+                        }
+                    });
             }
         }
     );
