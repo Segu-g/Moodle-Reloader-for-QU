@@ -21,15 +21,23 @@ function crrent_tab() {
 }
 
 
-function TodayCourses(props: { timetable: TimeTableManeger, courses:CoursesManeger }) {
+function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger }) {
     const today = new Date();
-    const courses = get_day_courses(today.getDay(), props.timetable);
+    const [day, setDay] = useState(today.getDay());
+    const moveDay= (offset: number)=>{
+        return () => { setDay((day + offset) % 7); }
+    }
+    
+    
+    const courses = get_day_courses(day, props.timetable);
     const current = get_current_period();
     let current_id = 0;
     if (current.length != 0) {
         current_id = current[0];
     }
-    const day_formatter = ["日", "月", "火", "水", "木", "金", "土"];
+    const day_formatter_en = ["Sum", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const day_formatter_ja = ["日", "月", "火", "水", "木", "金", "土"];
+
     const elements = courses.map(
         (id, index) => {
             const course = props.courses.load(id);
@@ -42,7 +50,7 @@ function TodayCourses(props: { timetable: TimeTableManeger, courses:CoursesManeg
                     <div key={index}/> :
                     <div key={index} className="row-center border">
                         <div style={style}>
-                            {day_formatter[today.getDay()]
+                            {day_formatter_ja[day]
                                 + String(index)
                                 + "限"}<br />
                             {course.name}
@@ -63,7 +71,14 @@ function TodayCourses(props: { timetable: TimeTableManeger, courses:CoursesManeg
     );
     return (
         <div>
-            {elements}
+            <div style={{display: "flex", justifyContent: "space-between", paddingBottom:".5rem"}}>
+                <div className={styles["arrow-left"]} onClick={moveDay(-1)}/>
+                <div style={{fontWeight:"bold"}}>{day_formatter_en[day]}</div>
+                <div className={styles["arrow-right"]} onClick={moveDay(1)}/>
+            </div>
+            <div>
+                {elements}
+            </div>
         </div>
     );
     
@@ -187,7 +202,7 @@ function Contents(props: {
     url: string,
     title?: string
 }) {
-    let keys = ["today", "enrol", /* test, */];
+    let keys = ["course", "enrol", /* test, */];
     const [selected_key, set_key] = useState(keys[0]);
     const tabs = keys.map(
         (key) => {
@@ -202,8 +217,8 @@ function Contents(props: {
          }
     )
     const content: {[key:string]:JSX.Element}= {
-        "today": (
-            <TodayCourses timetable={props.timetable} courses={props.courses}/>
+        "course": (
+            <CoursesTab timetable={props.timetable} courses={props.courses}/>
         ),
         "enrol": (
             <EnrolCourse
