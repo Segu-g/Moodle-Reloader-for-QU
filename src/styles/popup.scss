@@ -171,5 +171,24 @@
         } 
     }
 
+    .arrow-left{
+        display: inline-block;
+        width: .7rem;
+        height: .7rem;
+        margin: .5rem;
+        border-left: 4px solid;
+        border-bottom: 4px solid;
+        transform: rotate(45deg);
+    }
+
+    .arrow-right{
+        display: inline-block;
+        width: .7rem;
+        height: .7em;
+        margin: .5rem;
+        border-right: 4px solid;
+        border-top: 4px solid;
+        transform: rotate(45deg);
+    }
 
 }
