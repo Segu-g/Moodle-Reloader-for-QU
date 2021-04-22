@@ -1,6 +1,6 @@
 {
   "name": "moodle-reloader-for-qu",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "This extension reload Moodle page when the course start.",
   "main": "dist/index.js",
   "directories": {
