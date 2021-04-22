@@ -31,6 +31,21 @@ export function Home() {
                     </span>
                     <p>
                         <h5>
+                            ver2.0.3
+                        </h5>
+                        <p>
+                            popupで他の曜日を表示できるように変更
+                            リロード後にページが閉じない不具合を修正
+                        </p>
+
+                        <h5>
+                            ver2.0.2
+                        </h5>
+                        <p>
+                            TimeTable周りのUIを改善
+                        </p>
+
+                        <h5>
                             ver2.0.1
                         </h5>
                         <p>
