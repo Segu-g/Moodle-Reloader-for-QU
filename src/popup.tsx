@@ -72,7 +72,7 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger
     return (
         <div>
             <div style={{display: "flex", justifyContent: "space-between", paddingBottom:".5rem"}}>
-                <div className={styles["arrow-left"]} onClick={moveDay(-1)}/>
+                <div className={styles["arrow-left"]} onClick={moveDay(6)}/>
                 <div style={{fontWeight:"bold"}}>{day_formatter_en[day]}</div>
                 <div className={styles["arrow-right"]} onClick={moveDay(1)}/>
             </div>
