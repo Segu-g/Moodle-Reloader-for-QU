@@ -19,17 +19,28 @@ export function Home() {
                     <span className="text-heading">
                         この拡張機能についての情報 / Infomation about this extension.
                     </span>
-                    <p>
-                        Moodle Reloader for QU
-                        ver.{chrome.runtime.getManifest().version} <br />
+                    <span>
+                        <h5>Moodle Reloader for QU
+                        ver.{chrome.runtime.getManifest().version} </h5>
+                        <p>
                         author: Segu (<a href="https://twitter.com/SeguSegment">@SeguSegment</a>) <br />
-                        email: <a href="mailto:segusegment@gmail.com">segusegment@gmail.com</a>
-                    </p>
+                        email: <a href="mailto:segusegment@gmail.com">segusegment@gmail.com</a> <br />
+                        要望，質問: <a href="https://peing.net/ja/segusegment">Peing</a>
+                        </p>
+                    </span>
+                    
+                    
 
                     <span className="text-heading">
                         更新履歴
                     </span>
                     <span>
+                        <h5>
+                            ver2.0.4
+                        </h5>
+                        リロード時にバックグラウンドで処理がループする不具合を修正
+                        リロードに失敗した際のアラート機能を追加(Settingから設定)
+
                         <h5>
                             ver2.0.3
                         </h5>
