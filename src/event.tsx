@@ -7,6 +7,7 @@
  */
 import { HOSTNAME, id2url } from "./MoodleUtils/UrlParser";
 import { ChromeStorage } from "./chromeAPI_wrapper/storage";
+import { newExtSettingManeger, ExtSettingsManeger } from "./datas_wrapper/ExtSettings";
 import { message, reload, require_reload } from "./chromeAPI_wrapper/message";
 export { }
 
@@ -71,27 +72,48 @@ chrome.alarms.onAlarm.addListener(
 
 
 function reload_process(id: number, time: number) {
+    const course_url = id2url(id).href;
     chrome.tabs.create(
         {
-            url: id2url(id).href,
+            url: course_url,
             active: false
         },
         (tab) => {
-            const tab_id = tab.id;
-            if (tab_id != undefined) {
-                chrome.tabs.onUpdated.addListener(
-                    function mycallback (tabId, changeInfo, tab){
-                        if (tabId == tab_id && changeInfo.status == "complete") {
+            const course_tab_id = tab.id;
+            if (course_tab_id != undefined) {
+                function mycallback(
+                    tabId: number,
+                    changeInfo: chrome.tabs.TabChangeInfo,
+                    tab: chrome.tabs.Tab)
+                {
+                    console.log(changeInfo, tab);
+                    if (tabId == course_tab_id && changeInfo.status == "complete") {
+                        if (tab.title != undefined && tab.title.substr(0, 3) == "コース") {
                             setInterval(
-                                () => {chrome.tabs.remove(tab_id)},
+                                () => { chrome.tabs.remove(course_tab_id) },
                                 5 * 1000
                             );
-                            chrome.tabs.onUpdated.removeListener(mycallback);
+                            console.log("The tab has been successfully removed.")
+                        } else {
+                            (async ()=> {
+                                const extSettings = await newExtSettingManeger();
+                                if (extSettings.load("errorAlert")) {
+                                    alert("Failed to reload Moodle.\n[" + course_url + "]\nPlease reload Moodle manually.")
+                                }
+                            })()
                         }
-                    });
+                        chrome.tabs.onUpdated.removeListener(mycallback);
+                        
+                    }
+                }
+
+                chrome.tabs.onUpdated.addListener(
+                    mycallback
+                );
             }
         }
     );
 }
+
 
 console.log("Event.tsx");
