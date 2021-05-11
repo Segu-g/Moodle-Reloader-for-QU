@@ -35,7 +35,7 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger
     if (current.length != 0) {
         current_id = current[0];
     }
-    const day_formatter_en = ["Sum", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const day_formatter_en = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const day_formatter_ja = ["日", "月", "火", "水", "木", "金", "土"];
 
     const elements = courses.map(
@@ -57,8 +57,12 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger
                         </div>
                         <a
                             onClick={(e) => {
+                                if (e.ctrlKey) {
+                                    return false;
+                                }
                                 chrome.tabs.create({
-                                    url: id2url(course.id).href
+                                    url: id2url(course.id).href,
+                                    active: true
                                 });
                             }}
                             href={id2url(course.id).href}>
@@ -257,7 +261,12 @@ function App(props: {
                     Moodle Reloader
                 </div>
                 <div
-                    style={{ marginLeft: "auto" , cursor: "pointer"}}
+                    style={
+                        {
+                            marginLeft: "auto",
+                            cursor: "pointer",
+                        }}
+                    className="hoverUnderline"
                     onClick={() => {chrome.runtime.openOptionsPage()}}
                 >
                     (OPTION)
