@@ -1,4 +1,4 @@
-import { QUMoodleURL, is_moodle_url, id2url} from "./MoodleUtils/UrlParser";
+import { QUMoodleURL, is_moodle_url, id2url } from "./MoodleUtils/UrlParser";
 import { newTimeTableManeger, TimeTableManeger } from "./datas_wrapper/TimeTable";
 import { newCoursesManeger, CoursesManeger } from "./datas_wrapper/Course";
 import { get_day_courses, get_current_period } from "./datas_wrapper/CourseCollector";
@@ -7,6 +7,7 @@ import React, { useState, useRef, useReducer } from "react";
 import ReactDOM from "react-dom";
 import styles from "./styles/popup.scss";
 export { }
+
 
 function crrent_tab() {
     return new Promise<chrome.tabs.Tab>(
@@ -21,33 +22,33 @@ function crrent_tab() {
 }
 
 
-function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger }) {
+function CoursesTab(props: { timetable: TimeTableManeger, courses: CoursesManeger }) {
     const today = new Date();
     const [day, setDay] = useState(today.getDay());
-    const moveDay= (offset: number)=>{
+    const moveDay = (offset: number) => {
         return () => { setDay((day + offset) % 7); }
     }
-    
-    
+
+
     const courses = get_day_courses(day, props.timetable);
     const current = get_current_period();
     let current_id = 0;
     if (current.length != 0) {
         current_id = current[0];
     }
-    const day_formatter_en = ["Sum", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const day_formatter_en = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const day_formatter_ja = ["日", "月", "火", "水", "木", "金", "土"];
 
     const elements = courses.map(
         (id, index) => {
             const course = props.courses.load(id);
             const style: React.CSSProperties = {
-                color: (id != current_id) ? "black" :"#ffe67a"
+                color: (id != current_id) ? "black" : "#ffe67a"
             };
 
-            return (        
+            return (
                 (course == undefined) ?
-                    <div key={index}/> :
+                    <div key={index} /> :
                     <div key={index} className="row-center border">
                         <div style={style}>
                             {day_formatter_ja[day]
@@ -57,36 +58,53 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses:CoursesManeger
                         </div>
                         <a
                             onClick={(e) => {
+                                if (e.ctrlKey) {
+                                    chrome.tabs.create({
+                                        url: id2url(course.id).href,
+                                        active: false
+                                    });
+                                    return false;
+                                }
                                 chrome.tabs.create({
-                                    url: id2url(course.id).href
+                                    url: id2url(course.id).href,
+                                    active: true
                                 });
                             }}
+
+                            onAuxClick={(e) => {
+                                chrome.tabs.create({
+                                    url: id2url(course.id).href,
+                                    active: false
+                                });
+                                e.preventDefault()
+                            }}
+                            style={{ color: "black" }}
                             href={id2url(course.id).href}>
                             <div className={styles["gg-external"]} />
                         </a>
-                    </div>
+                    </div >
             );
-            
+
         }
     );
     return (
         <div>
-            <div style={{display: "flex", justifyContent: "space-between", paddingBottom:".5rem"}}>
-                <div className={styles["arrow-left"]} onClick={moveDay(6)}/>
-                <div style={{fontWeight:"bold"}}>{day_formatter_en[day]}</div>
-                <div className={styles["arrow-right"]} onClick={moveDay(1)}/>
+            <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: ".5rem" }}>
+                <div className={styles["arrow-left"]} onClick={moveDay(6)} />
+                <div style={{ fontWeight: "bold" }}>{day_formatter_en[day]}</div>
+                <div className={styles["arrow-right"]} onClick={moveDay(1)} />
             </div>
             <div>
                 {elements}
             </div>
         </div>
     );
-    
+
 }
 
 
-function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?:string, courses: CoursesManeger }) {
-    
+function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?: string, courses: CoursesManeger }) {
+
     var default_id = props.moodle_url?.searchParams.has("id") ?
         Number(props.moodle_url.searchParams.get("id")) : 0;
     var default_name = props.title;
@@ -100,7 +118,7 @@ function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?:string, courses: 
         if (id_current == null || name_current == null) {
             return false;
         }
-        
+
         if (isNaN(Number(id_current.value))) {
             return false;
         }
@@ -211,25 +229,25 @@ function Contents(props: {
                     key={key}
                     className={"tab" + ((selected_key == key) ? " selected" : "")}
                     onClick={() => { set_key(key); }}>
-                    { key }
+                    { key}
                 </div>
             );
-         }
+        }
     )
-    const content: {[key:string]:JSX.Element}= {
+    const content: { [key: string]: JSX.Element } = {
         "course": (
-            <CoursesTab timetable={props.timetable} courses={props.courses}/>
+            <CoursesTab timetable={props.timetable} courses={props.courses} />
         ),
         "enrol": (
             <EnrolCourse
                 moodle_url={
                     is_moodle_url(new URL(props.url)) ?
-                        new QUMoodleURL(props.url): undefined
-                    }
+                        new QUMoodleURL(props.url) : undefined
+                }
                 title={props.title}
                 courses={props.courses} />
         ),
-        "test": <Test/>
+        "test": <Test />
     }
 
     return (
@@ -251,20 +269,25 @@ function App(props: {
     title?: string
 }) {
     return (
-        <div className={ styles["root"] }>
+        <div className={styles["root"]}>
             <div className={"row-center " + styles["header"]}>
                 <div>
                     Moodle Reloader
                 </div>
                 <div
-                    style={{ marginLeft: "auto" , cursor: "pointer"}}
-                    onClick={() => {chrome.runtime.openOptionsPage()}}
+                    style={
+                        {
+                            marginLeft: "auto",
+                            cursor: "pointer",
+                        }}
+                    className="hoverUnderline"
+                    onClick={() => { chrome.runtime.openOptionsPage() }}
                 >
                     (OPTION)
                 </div>
             </div>
             <div className={styles["header-dummy"]}></div>
-            <Contents timetable={props.timetable} courses={props.courses} url={props.url} title={props.title}/>
+            <Contents timetable={props.timetable} courses={props.courses} url={props.url} title={props.title} />
         </div>
     );
 }
@@ -278,7 +301,7 @@ async function main() {
     }
     const root = document.getElementById("root");
     ReactDOM.render(
-        <App url={tab.url} title={tab.title} courses={courses} timetable={timetable}/>,
+        <App url={tab.url} title={tab.title} courses={courses} timetable={timetable} />,
         root
     );
 }
