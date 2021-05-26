@@ -23,18 +23,25 @@ export function Home() {
                         <h5>Moodle Reloader for QU
                         ver.{chrome.runtime.getManifest().version} </h5>
                         <p>
-                        author: Segu (<a href="https://twitter.com/SeguSegment">@SeguSegment</a>) <br />
+                            author: Segu (<a href="https://twitter.com/SeguSegment">@SeguSegment</a>) <br />
                         email: <a href="mailto:segusegment@gmail.com">segusegment@gmail.com</a> <br />
                         要望，質問: <a href="https://peing.net/ja/segusegment">Peing</a>
                         </p>
                     </span>
-                    
-                    
+
+
 
                     <span className="text-heading">
                         更新履歴
                     </span>
                     <span>
+                        <h5>
+                            ver2.0.5
+                        </h5>
+                        Popupのtypoを修正．
+                        PopupのUIを改善．
+                        Popupのコースをホイールクリックを用いて非アクティブで開く操作に対応．
+
                         <h5>
                             ver2.0.4
                         </h5>
@@ -45,22 +52,22 @@ export function Home() {
                             ver2.0.3
                         </h5>
                         popupで他の曜日を表示できるように変更
-                        リロード後にページが閉じない不具合を修正<br/>
+                        リロード後にページが閉じない不具合を修正<br />
 
                         <h5>
                             ver2.0.2
                         </h5>
-                        TimeTable周りのUIを改善<br/>
+                        TimeTable周りのUIを改善<br />
 
                         <h5>
                             ver2.0.1
                         </h5>
-                        ナビゲーションに表示するコースを先4時限から当日の講義に変更．<br/>
+                        ナビゲーションに表示するコースを先4時限から当日の講義に変更．<br />
 
                         <h5>
                             ver2.0.0
                         </h5>
-                        UIを一新し，Moodleのナビゲーションへのコースの表示，ポップアップをサポート．<br/>
+                        UIを一新し，Moodleのナビゲーションへのコースの表示，ポップアップをサポート．<br />
                     </span>
                 </div>
             </div>

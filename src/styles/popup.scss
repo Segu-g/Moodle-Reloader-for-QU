@@ -25,12 +25,21 @@
     .mb{
         margin-bottom: 1rem;
     }
+
     .ml{
         margin-left: 1rem;
     }
+
     .mr{
         margin-right: 1rem;
     }
+
+    .hoverUnderline{
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+
     .posright{
         display: flex;
         flex-direction: row-reverse;
@@ -156,7 +165,7 @@
             right: -4px
         }
         &::before {
-            background: -webkit-link;
+            background: black;
             transform: rotate(-45deg);
             width: 12px;
             height: 2px;
