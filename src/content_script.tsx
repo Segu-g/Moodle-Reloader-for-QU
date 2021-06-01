@@ -7,8 +7,8 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { PAGETYPES, QUMoodleURL , id2url} from "./MoodleUtils/UrlParser";
-import { newCoursesManeger, CoursesManeger } from "./datas_wrapper/Course";
+import { PAGETYPES, QUMoodleURL, id2url } from "./MoodleUtils/UrlParser";
+import { newCourseFolder, FolderManeger } from "./datas_wrapper/Course";
 import { newTimeTableManeger, TimeTableManeger } from "./datas_wrapper/TimeTable";
 import { get_next_courses, get_day_courses } from "./datas_wrapper/CourseCollector";
 import { days, Time, period_times } from "./datas_wrapper/Time";
@@ -17,11 +17,11 @@ export { }
 
 
 async function main() {
-    const courses_promise = newCoursesManeger();
+    const courseFolder = newCourseFolder();
     const timetable_promise = newTimeTableManeger();
     var moodle_url = new QUMoodleURL(document.URL);
     const timetable = await timetable_promise;
-    const courses = await courses_promise;
+    const courses = await courseFolder;
     const element = document.getElementById("nav-drawer");
     if (element == null) {
         return;
@@ -42,7 +42,7 @@ async function set_reload(timetable: TimeTableManeger, moodle_url: QUMoodleURL) 
     const now = new Time(today.getHours(), today.getMinutes());
     var period = 0;
     // console.log(todays_courses);
-    for (; period < todays_courses.length; period++){
+    for (; period < todays_courses.length; period++) {
         if (now >= period_times[period]) {
             // console.log(period, period_times[period])
             continue;
@@ -60,15 +60,15 @@ async function set_reload(timetable: TimeTableManeger, moodle_url: QUMoodleURL) 
             time.minutes
         );
         require_reload(id, date);
-        
+
     }
 
-    
-    
+
+
 }
 
 
-function render_today_courses(element: HTMLElement, timetable: TimeTableManeger, courses: CoursesManeger) {
+function render_today_courses(element: HTMLElement, timetable: TimeTableManeger, courseFolder: FolderManeger) {
     const today = new Date();
     const day_courses = get_day_courses(today.getDay(), timetable);
     let buf_dom: ChildNode | null = element.children[0];
@@ -77,7 +77,7 @@ function render_today_courses(element: HTMLElement, timetable: TimeTableManeger,
         if (id == undefined) {
             continue;
         }
-        let course = courses.load(id);
+        let course = courseFolder.searchCourse(id);
         let target_dom = document.createElement("div");
         const day_formatter = ["日", "月", "火", "水", "木", "金", "土"];
         target_dom.className = "list-group-item";
@@ -98,12 +98,13 @@ function render_today_courses(element: HTMLElement, timetable: TimeTableManeger,
 }
 
 
-function render_next_courses(element: HTMLElement, timetable: TimeTableManeger, courses: CoursesManeger) {
+function render_next_courses(element: HTMLElement, timetable: TimeTableManeger, courseFolder: FolderManeger) {
     let nexts = get_next_courses(4, timetable);
     let buf_dom: ChildNode | null = element.children[0];
     for (let item of nexts) {
+        console.log(item);
         let id = item.id;
-        let course = courses.load(id);
+        let course = courseFolder.searchCourse(id);
         let target_dom = document.createElement("div");
         const day_formatter = ["日", "月", "火", "水", "木", "金", "土"];
         target_dom.className = "list-group-item";
