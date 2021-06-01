@@ -1,6 +1,6 @@
 import { QUMoodleURL, is_moodle_url, id2url } from "./MoodleUtils/UrlParser";
 import { newTimeTableManeger, TimeTableManeger } from "./datas_wrapper/TimeTable";
-import { newCoursesManeger, CoursesManeger } from "./datas_wrapper/Course";
+import { Course, FolderManeger, newCourseFolder } from "./datas_wrapper/Course";
 import { get_day_courses, get_current_period } from "./datas_wrapper/CourseCollector";
 import { require_reload } from "./chromeAPI_wrapper/message";
 import React, { useState, useRef, useReducer } from "react";
@@ -22,7 +22,7 @@ function crrent_tab() {
 }
 
 
-function CoursesTab(props: { timetable: TimeTableManeger, courses: CoursesManeger }) {
+function CoursesTab(props: { timetable: TimeTableManeger, courseFolder: FolderManeger }) {
     const today = new Date();
     const [day, setDay] = useState(today.getDay());
     const moveDay = (offset: number) => {
@@ -41,9 +41,15 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses: CoursesManege
 
     const elements = courses.map(
         (id, index) => {
-            const course = props.courses.load(id);
+            let course: Course | undefined;
+            if (id == undefined) {
+                course = undefined;
+            } else {
+                course = props.courseFolder.searchCourse(id);
+            }
             const style: React.CSSProperties = {
-                color: (id != current_id) ? "black" : "#ffe67a"
+                // color: (id != current_id) ? "black" : "#ffe67a"
+                color: "black"
             };
 
             return (
@@ -60,20 +66,20 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses: CoursesManege
                             onClick={(e) => {
                                 if (e.ctrlKey) {
                                     chrome.tabs.create({
-                                        url: id2url(course.id).href,
+                                        url: id2url(course!.id).href,
                                         active: false
                                     });
                                     return false;
                                 }
                                 chrome.tabs.create({
-                                    url: id2url(course.id).href,
+                                    url: id2url(course!.id).href,
                                     active: true
                                 });
                             }}
 
                             onAuxClick={(e) => {
                                 chrome.tabs.create({
-                                    url: id2url(course.id).href,
+                                    url: id2url(course!.id).href,
                                     active: false
                                 });
                                 e.preventDefault()
@@ -103,7 +109,7 @@ function CoursesTab(props: { timetable: TimeTableManeger, courses: CoursesManege
 }
 
 
-function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?: string, courses: CoursesManeger }) {
+function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?: string, courseFolder: FolderManeger }) {
 
     var default_id = props.moodle_url?.searchParams.has("id") ?
         Number(props.moodle_url.searchParams.get("id")) : 0;
@@ -124,7 +130,7 @@ function EnrolCourse(props: { moodle_url?: QUMoodleURL, title?: string, courses:
         }
         const id = Number(id_current.value);
         const name = name_current.value;
-        props.courses.write(
+        props.courseFolder.setCourse(
             id,
             {
                 id: id,
@@ -216,7 +222,7 @@ function Test() {
 
 function Contents(props: {
     timetable: TimeTableManeger,
-    courses: CoursesManeger,
+    courseFolder: FolderManeger,
     url: string,
     title?: string
 }) {
@@ -236,7 +242,7 @@ function Contents(props: {
     )
     const content: { [key: string]: JSX.Element } = {
         "course": (
-            <CoursesTab timetable={props.timetable} courses={props.courses} />
+            <CoursesTab timetable={props.timetable} courseFolder={props.courseFolder} />
         ),
         "enrol": (
             <EnrolCourse
@@ -245,7 +251,7 @@ function Contents(props: {
                         new QUMoodleURL(props.url) : undefined
                 }
                 title={props.title}
-                courses={props.courses} />
+                courseFolder={props.courseFolder} />
         ),
         "test": <Test />
     }
@@ -264,7 +270,7 @@ function Contents(props: {
 
 function App(props: {
     timetable: TimeTableManeger,
-    courses: CoursesManeger,
+    courseFolder: FolderManeger,
     url: string,
     title?: string
 }) {
@@ -287,7 +293,7 @@ function App(props: {
                 </div>
             </div>
             <div className={styles["header-dummy"]}></div>
-            <Contents timetable={props.timetable} courses={props.courses} url={props.url} title={props.title} />
+            <Contents timetable={props.timetable} courseFolder={props.courseFolder} url={props.url} title={props.title} />
         </div>
     );
 }
@@ -295,13 +301,13 @@ function App(props: {
 async function main() {
     const tab = await crrent_tab();
     const timetable = await newTimeTableManeger();
-    const courses = await newCoursesManeger();
+    const courseFolder = await newCourseFolder();
     if (tab.url == undefined) {
         return;
     }
     const root = document.getElementById("root");
     ReactDOM.render(
-        <App url={tab.url} title={tab.title} courses={courses} timetable={timetable} />,
+        <App url={tab.url} title={tab.title} courseFolder={courseFolder} timetable={timetable} />,
         root
     );
 }
