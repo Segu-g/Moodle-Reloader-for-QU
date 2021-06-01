@@ -24,9 +24,19 @@ export class _TimeTableManeger {
     write(day: (typeof days)[number], period: number, id: number) {
         this.timetable[day][period] = id;
     }
+
+    removeCourse(id: number) {
+        for (let day of days) {
+            for (let period = 0; period < this.timetable[day].length; period++) {
+                if (this.timetable[day][period] == id) {
+                    this.timetable[day][period] = undefined;
+                }
+            }
+        }
+    }
 }
 
-export class TimeTableManeger extends _TimeTableManeger{
+export class TimeTableManeger extends _TimeTableManeger {
     save() {
         ChromeStorage._set({ timetable: this.timetable });
     }
@@ -37,6 +47,11 @@ export class TimeTableManeger extends _TimeTableManeger{
 
     write(day: (typeof days)[number], period: number, id: number) {
         super.write(day, period, id);
+        this.save();
+    }
+
+    removeCourse(id: number) {
+        super.removeCourse(id);
         this.save();
     }
 }
@@ -80,6 +95,11 @@ export class TimeTableImpl extends _TimeTableManeger {
 
     write(day: (typeof days)[number], period: number, id: number) {
         super.write(day, period, id);
+        this.setState();
+    }
+
+    removeCourse(id: number) {
+        super.removeCourse(id);
         this.setState();
     }
 

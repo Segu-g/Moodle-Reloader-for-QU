@@ -2,14 +2,14 @@ import { time } from "console";
 import { rejects } from "node:assert";
 import { useState, useReducer, useEffect } from "react";
 
-export class ChromeStorage{
-    public static _get<T>(key: string, def_val: T, storage: "local"|"sync" = "local"): Promise<T> {
+export class ChromeStorage {
+    public static _get<T>(key: string, def_val: T, storage: "local" | "sync" = "local"): Promise<T> {
         let arg_object: { [key: string]: T } = {};
         arg_object[key] = def_val;
         return new Promise<T>((resolve, reject) => {
             if (storage == "local") {
                 chrome.storage.local.get(arg_object, (ret: { [key: string]: T }) => { resolve(ret[key]); })
-            } else if(storage == "sync"){
+            } else if (storage == "sync") {
                 chrome.storage.sync.get(arg_object, (ret: { [key: string]: T }) => { resolve(ret[key]); })
             }
         });
@@ -23,7 +23,7 @@ export class ChromeStorage{
             }
         });
     }
-    public static remove(key: "string", storage: "local" | "sync" = "local") {
+    public static _remove(key: string, storage: "local" | "sync" = "local") {
         return new Promise<void>((resolve, reject) => {
             if (storage == "local") {
                 chrome.storage.local.remove(key, resolve);
@@ -50,7 +50,7 @@ export class ChromeStorage{
             (resolve, reject) => {
                 chrome.storage.local.set(
                     { version: version },
-                    resolve     
+                    resolve
                 )
             }
         )
