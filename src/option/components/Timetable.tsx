@@ -12,10 +12,10 @@ import folderIcon from "../../lib/folder_icon.svg";
 import minusIcon from "../../lib/minus.svg";
 
 
-const TYPES = {
-    COURSE: "COUESE",
-    FOLDER: "FOLDER",
-    DELCOURSE: "DELCOURSE"
+enum TYPES {
+    COURSE = "COUESE",
+    FOLDER = "FOLDER",
+    DELCOURSE = "DELCOURSE"
 };
 
 
@@ -297,21 +297,42 @@ function FolderComponent(props: {
     const [open, changeOpen] = useState<boolean>(false);
     const courseIds = props.folder.courseIds();
 
+    const [drag_collected, drag_ref] = useDrag(
+        () => ({
+            item: {
+                type: TYPES.FOLDER,
+                folderName: props.folderName,
+                folder: props.folder,
+                parent: props.parent
+            },
+            canDrag() {
+                return parent != undefined;
+            }
+        })
+    )
     const [drop_collected, drop_ref] = useDrop<
-        { type: string, id: number, folder: FolderManeger },
+        { type: TYPES.COURSE, id: number, folder: FolderManeger } |
+        { type: TYPES.FOLDER, folderName: string, folder: FolderManeger, parent: FolderManeger },
         void,
         { isOver: boolean }
     >(() => ({
-        accept: TYPES.COURSE,
+        accept: [TYPES.COURSE, TYPES.FOLDER],
         collect(monitor) {
             return {
                 isOver: monitor.isOver()
             }
         },
         drop(item, monitor) {
-            if (props.folder != item.folder) {
-                let course = item.folder.removeCourse(item.id, false)!;
-                props.folder.setCourse(item.id, course);
+            if (item.type == TYPES.COURSE) {
+                if (props.folder != item.folder) {
+                    let course = item.folder.removeCourse(item.id, false)!;
+                    props.folder.setCourse(item.id, course);
+                }
+            } else if (item.type == TYPES.FOLDER) {
+                if (!item.folder.isDescentFolder(props.folder)) {
+                    let folder = item.parent.removeFolder(item.folderName, false)!;
+                    props.folder.setFolder(item.folderName, folder);
+                }
             }
         }
     }));
@@ -321,15 +342,26 @@ function FolderComponent(props: {
     }
 
     return (
-        <>
+
+        < div style={folderStyle} >
             <div
                 className={styles["folderTitle"]}
-                style={folderStyle}
                 onClick={(event) => { changeOpen(!open); }}
                 ref={drop_ref}>
                 {open ? "▾" : "▸"}
-                <img src={folderIcon} alt="folder icon" style={{ height: "1rem", paddingRight: ".5rem" }} />
+                <img src={folderIcon} alt="folder icon" style={{ height: "1rem", paddingRight: ".5rem" }} ref={drag_ref} />
                 {props.folderName}
+                {props.parent != undefined ? <div
+                    onClick={() => {
+                        if (props.folder.isEmpty()) {
+                            props.parent?.removeFolder(props.folderName);
+                        }
+                    }}
+                    style={{ marginLeft: "auto" }}>
+                    <img src={minusIcon} alt="remove course Icon" style={{ height: "1rem", fill: "red" }} />
+                </div> : null
+                }
+
             </div>
             <div
                 className={styles["folderComponent"]}
@@ -341,6 +373,7 @@ function FolderComponent(props: {
                             folderName={folderName}
                             folder={props.folder.getFolder(folderName)}
                             rootFolder={props.rootFolder}
+                            parent={props.folder}
                             key={folderName}
                             timetable={props.timetable}
                         />)
@@ -359,8 +392,7 @@ function FolderComponent(props: {
                     )}
                 </div>
             </div>
-
-        </>
+        </div >
     );
 
 }

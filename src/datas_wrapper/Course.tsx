@@ -1,3 +1,4 @@
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "node:constants";
 import { useEffect, useState, useReducer } from "react";
 import { ChromeStorage } from "../chromeAPI_wrapper/storage";
 
@@ -16,9 +17,11 @@ export interface Folder {
 export class _FolderManeger {
     courses: Course[]
     folders: { [courseName: string]: Folder | undefined }
-    constructor(self: Folder) {
-        this.courses = self.courses
-        this.folders = self.folders
+    accessor: string[]
+    constructor(self: Folder, accessor: string[]) {
+        this.courses = self.courses;
+        this.folders = self.folders;
+        this.accessor = accessor;
     }
 
 
@@ -75,7 +78,7 @@ export class _FolderManeger {
             if (folder == undefined) {
                 continue;
             }
-            let folderManeger = new _FolderManeger(folder);
+            let folderManeger = new _FolderManeger(folder, [...this.accessor, folderName]);
             let ret = folderManeger.searchCourse(id);
             if (ret != undefined) {
                 return ret;
@@ -95,8 +98,20 @@ export class _FolderManeger {
             });
     }
 
-    getFolder(name: string) {
-        return new _FolderManeger(this.folders[name]!);
+    getFolder(folderName: string) {
+        return new _FolderManeger(this.folders[folderName]!, [...this.accessor, folderName]);
+    }
+
+    isDescentFolder(folder: _FolderManeger) {
+        if (this.accessor.length <= folder.accessor.length) {
+            for (let i = 0; i < this.accessor.length; i++) {
+                if (this.accessor[i] != folder.accessor[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     setFolder(folderName: string, folder: Folder) {
@@ -130,14 +145,18 @@ export class _FolderManeger {
         }
         return false;
     }
+
+    isEmpty() {
+        return this.folderNames().length == 0 && this.courseIds().length == 0;
+    }
 }
 
 
 export class FolderManeger extends _FolderManeger {
     save: () => void
-    constructor(self: Folder, save: () => void) {
-        super(self);
-        this.save = save
+    constructor(self: Folder, accessor: string[], save: () => void) {
+        super(self, accessor);
+        this.save = save;
     }
 
     setCourse(id: number, course: Course, update: Boolean = true) {
@@ -162,8 +181,8 @@ export class FolderManeger extends _FolderManeger {
         }
     }
 
-    getFolder(name: string) {
-        return new FolderManeger(this.folders[name]!, this.save);
+    getFolder(folderName: string) {
+        return new FolderManeger(this.folders[folderName]!, [...this.accessor, folderName], this.save);
     }
 
     setFolder(folderName: string, folder: Folder, update: Boolean = true) {
@@ -197,6 +216,8 @@ export class FolderManeger extends _FolderManeger {
         }
         return res;
     }
+
+
 }
 
 
@@ -226,7 +247,7 @@ export function useCourseFolder(): [boolean, FolderManeger] {
         }
     }
 
-    return [ready, new FolderManeger(rootFolder, save)];
+    return [ready, new FolderManeger(rootFolder, [], save)];
 }
 
 export async function newCourseFolder() {
@@ -234,7 +255,7 @@ export async function newCourseFolder() {
     function save() {
         ChromeStorage._set({ "root": rowFolder });
     }
-    return new FolderManeger(rowFolder, save);
+    return new FolderManeger(rowFolder, [], save);
 }
 
 
