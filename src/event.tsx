@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     if (old_version < version) {
         if (old_version == 2) {
             let courses = await ChromeStorage._get<Course[]>("courses", new Array());
-            // await ChromeStorage._remove("courses");
+            await ChromeStorage._remove("courses");
             await ChromeStorage._set<Folder>({ "root": { courses: courses, folders: Object() } });
         } else {
             await Promise.all([
