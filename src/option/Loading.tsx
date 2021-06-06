@@ -15,9 +15,7 @@ export function Loading() {
         <div>
             <Header
                 title="Moodel Reloader for QU"
-                show={false}
-                setPage={() => { }}
-                pages={{}} />
+                show={false} />
             <div className="dummy-header" />
             <div className="page-wrapper show"></div>
             <LoadingContent />

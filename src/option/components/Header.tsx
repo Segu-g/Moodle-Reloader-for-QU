@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 
 import hamburger from "../../lib/menu.svg";
-import { Pages } from "../Pages";
+import { pages } from "../Pages";
+import { History } from "history";
+import { useHistory } from "react-router-dom";
 import styles from "../../styles/header.scss";
 
 export { Header };
 
 
-function Navigation(props: { setPage: (page: string) => void, setShow: (show: boolean) => void, pages: Pages }) {
-    const nav_items = Object.keys(props.pages).map(
-        (page: string) => {
+function Navigation(props: { setShow: React.Dispatch<React.SetStateAction<boolean>> }) {
+    let history = useHistory();
+    const nav_items = pages.map(
+        page => {
+            const handleClick = () => {
+                history.push(page.path);
+                props.setShow(false);
+            };
             return (
                 <button
-                    className="list-group-item hover-button"
-                    key={page}
-                    onClick={
-                        () => {
-                            props.setPage(page);
-                            props.setShow(false);
-                        }
-                    }
-                >
+                    key={page.name}
+                    onClick={handleClick}
+                    className="list-group-item hover-button">
                     <div className="button-item">
-                        <img src={props.pages[page].icon} className="icon" />
+                        <img src={page.icon} className="icon" />
                         <div className="font-weight-bold">
-                            {page}
+                            {page.name}
                         </div>
                     </div>
                 </button>
@@ -39,7 +40,7 @@ function Navigation(props: { setPage: (page: string) => void, setShow: (show: bo
 }
 
 
-function Header(props: { title: string, show: boolean, setPage: (key: string)=>void, pages: Pages }) {
+function Header(props: { title: string, show: boolean }) {
     const [show, setShow] = useState(props.show);
     const header = (
         <div id="header" className="header-bar row-nowrap">
@@ -65,7 +66,7 @@ function Header(props: { title: string, show: boolean, setPage: (key: string)=>v
         {header}
         <div className={page_wrapper_class}></div>
         <div className={site_nav_style}>
-            <Navigation setPage={props.setPage} setShow={setShow} pages={ props.pages }/>
+            <Navigation setShow={setShow} />
         </div>
     </div>
 }
