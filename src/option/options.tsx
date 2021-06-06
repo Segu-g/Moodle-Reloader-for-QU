@@ -17,7 +17,7 @@ export { }
 
 const root = document.getElementById("root");
 ReactDOM.render(
-    <App page="Home" />,
+    <App />,
     root
 )
 

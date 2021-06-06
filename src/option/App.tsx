@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import { DndProvider} from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { HashRouter, Switch, Redirect } from 'react-router-dom';
 import { pages } from "./Pages";
 import { Header } from "./components/Header";
 
-export function App(props: { page: string }) {
-    const [page, setPage] = useState(props.page);
+export function App() {
     return (
         <DndProvider backend={HTML5Backend}>
-            <div>
+            <HashRouter>
                 <Header
                     title="Moodel Reloader for QU"
-                    show={false}
-                    setPage={setPage}
-                    pages={pages} />
+                    show={false} />
                 <div className="dummy-header" />
-                {pages[page].element}
-            </div>
-        </DndProvider> 
+                <Switch>
+                    {pages.map(value => value.element)}
+                    <Redirect to="/" />
+                </Switch>
+            </HashRouter>
+        </DndProvider>
     );
 }
