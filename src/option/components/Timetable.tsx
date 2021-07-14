@@ -23,7 +23,8 @@ function TimeTableCell(props: {
     timetable: TimeTableImpl,
     rootFolder: FolderManeger,
     day: (typeof days)[number],
-    period: number
+    period: number,
+    pos: { row: number, col: number }
 }) {
     let id = props.timetable.load(props.day, props.period);
     let course: Course | undefined;
@@ -56,7 +57,14 @@ function TimeTableCell(props: {
         }));
 
     return (
-        <td ref={ref} style={{ background: collected.isOver ? "rgba(0, 0, 0, 0.2)" : "white", maxWidth: "12vw" }} className="phalf">
+        <div ref={ref} style={{
+            background: collected.isOver ? "rgba(0, 0, 0, 0.2)" : "white",
+            maxWidth: "12vw",
+            gridRow: props.pos.row + 1,
+            gridColumn: props.pos.col + 1,
+            boxShadow: "0 0 0 1px #666",
+            wordBreak: "break-all"
+        }} className="phalf">
             <div>
                 {
                     (course == undefined) ?
@@ -72,48 +80,93 @@ function TimeTableCell(props: {
                         </div>
                 }
             </div>
-        </td>
+        </div>
     );
 }
 
 function TimetableComponent(props: { timetable: TimeTableImpl, rootFolder: FolderManeger }) {
-    let table_rows: JSX.Element[] = [];
-    table_rows.push(
-        <tr key="table-0" style={{ height: "2rem" }}>
-            <th></th>
-            {days.map((day) => { return <th key={"daylabel-" + day}>{day}</th> })}
-        </tr>
-    );
-    for (let period = 1; period < 7; period++) {
-        table_rows.push(
-            <tr key={"table-" + String(period)}>
-                <th>{period}</th>
-                {days.map((day) => {
-                    return (
-                        <TimeTableCell
-                            key={"course-" + day + String(period)}
-                            timetable={props.timetable}
-                            rootFolder={props.rootFolder}
-                            day={day}
-                            period={period}
-                        />
-                    );
-                })}
-            </tr>
+    let table_grids: JSX.Element[] = [];
+    for (let i = 0; i < days.length; i++) {
+        let day = days[i];
+        const style: React.CSSProperties = {
+            gridRow: 1,
+            gridColumn: i + 2,
+            boxShadow: "0 0 0 1px #666"
+        }
+        table_grids.push(
+            <div style={style} key={`daylabel-${day}`}>
+                {day}
+            </div>
         );
     }
+    for (let period = 1; period < 7; period++) {
+        let periodLabelStyle: React.CSSProperties = {
+            gridRow: period + 1,
+            gridColumn: 1,
+            boxShadow: "0 0 0 1px #666"
+        }
+        table_grids.push(
+            <div style={periodLabelStyle} key={`periodlabel-${period}`}>
+                {period}
+            </div>
+        );
+        for (let i = 0; i < days.length; i++) {
+            let day = days[i];
+            let pos = {
+                row: period,
+                col: i + 1
+            }
+            table_grids.push(
+                <TimeTableCell
+                    key={"course-" + day + String(period)}
+                    timetable={props.timetable}
+                    rootFolder={props.rootFolder}
+                    day={day}
+                    period={period}
+                    pos={pos}
+                />
+            );
+        }
+    }
+    // table_grids.push(
+    //     <div key="table-0" style={{ height: "2rem" }}>
+    //         <th></th>
+    //         {days.map((day) => { return <th key={"daylabel-" + day}>{day}</th> })}
+    //     </div>
+    // );
+    // for (let period = 1; period < 7; period++) {
+    //     table_grids.push(
+    //         <tr key={"table-" + String(period)}>
+    //             <th>{period}</th>
+    //             {days.map((day) => {
+    //                 return (
+    //                     <TimeTableCell
+    //                         key={"course-" + day + String(period)}
+    //                         timetable={props.timetable}
+    //                         rootFolder={props.rootFolder}
+    //                         day={day}
+    //                         period={period}
+    //                     />
+    //                 );
+    //             })}
+    //         </tr>
+    //     );
+    // }
 
     const table_style: React.CSSProperties = {
         minWidth: "600px",
         maxWidth: "65vw",
-        minHeight: "400px"
+        minHeight: "400px",
+        display: "grid",
+        gridTemplateRows: "2rem",
+        gridTemplateColumns: "2rem",
+        border: "solid 1px #666",
+        gridGap: "1px"
     }
     return (
-        <table style={table_style}>
-            <tbody>
-                {table_rows}
-            </tbody>
-        </table>
+        <div style={table_style}>
+            {table_grids}
+        </div>
     );
 }
 
@@ -191,13 +244,13 @@ function CourseAddForm(props: {
         <p className="row">
             <label style={label_style}>
                 id:
-                            </label>
+            </label>
             <input type="number" min="0" ref={id_ref} style={input_style} defaultValue={0} />
         </p>
         <p className="row">
             <label style={label_style}>
                 name:
-                            </label>
+            </label>
             <input type="text" ref={name_ref} style={input_style} defaultValue="" />
         </p>
         <div className="posright" >
@@ -221,7 +274,7 @@ function CourseModal(props: {
                     key={key}
                     className={styles["tab"] + " " + ((selected_key == key) ? styles["selected"] : "")}
                     onClick={() => { set_key(key); }}>
-                    { key}
+                    {key}
                 </div>
             );
         }
