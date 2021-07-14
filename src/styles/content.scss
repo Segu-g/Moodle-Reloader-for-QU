@@ -4,36 +4,26 @@
     }
     table{
         border-collapse: collapse;
-        border-spacing: 0;
+        table-layout: fixed;
+
         // width: 100%;
-        // table-layout: fixed;
-
-
-        tr{
-            border-top: solid 1px black;
-            border-bottom: solid 1px black;
-        }
 
         th{
             text-align: center;
             padding: 7px 0;
-            border-right:solid 1px black;
-            border-left:solid 1px black;
-
+            border: solid 1px;
             &:first-child{
                 padding: 7px 2px;
-                width: min-content;
+                // width: min-content;
             }
         }
 
         td{
             text-align: center;
-            border-right:solid 1px black;
-            border-left:solid 1px black;
+            border: solid 1px;
             min-width: 4rem;
             min-height: 2em;
         }
-
     }
 
     ul{
@@ -70,6 +60,11 @@
     .pr{
         padding-right: 1rem;
     }
+
+    .mhalf{
+        margin: .5rem;
+    }
+
 
     .mt{
         margin-top: 1rem;

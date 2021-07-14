@@ -2,10 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { resolve } from "../../webpack.config";
 
-import {　TimeTableSection } from "./components/Timetable"
+import { TimeTableSection } from "./components/Timetable"
 
 import "../styles/content.scss";
-/* global: chrome */
 
 
 
